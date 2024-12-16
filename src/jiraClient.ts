@@ -1,30 +1,17 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
 import { JiraIssue } from './types.js';
-
-// Load environment variables
-dotenv.config();
-
-const requiredEnvVars = ['JIRA_API_TOKEN', 'JIRA_EMAIL', 'JIRA_DOMAIN'] as const;
-const missingEnvVars = requiredEnvVars.filter(key => !process.env[key]);
-
-if (missingEnvVars.length > 0) {
-  throw new Error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
-}
-
-const config = {
-  apiToken: process.env.JIRA_API_TOKEN!,
-  email: process.env.JIRA_EMAIL!,
-  domain: process.env.JIRA_DOMAIN!
-} as const;
 
 export class JiraClient {
   private baseUrl: string;
   private headers: Record<string, string>;
 
   constructor() {
-    this.baseUrl = `https://${config.domain}`;
-    const auth = Buffer.from(`${config.email}:${config.apiToken}`).toString('base64');
+    const domain = process.env.JIRA_DOMAIN!;
+    const email = process.env.JIRA_EMAIL!;
+    const apiToken = process.env.JIRA_API_TOKEN!;
+
+    this.baseUrl = `https://${domain}`;
+    const auth = Buffer.from(`${email}:${apiToken}`).toString('base64');
     this.headers = {
       'Authorization': `Basic ${auth}`,
       'Accept': 'application/json',

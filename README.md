@@ -74,21 +74,14 @@ cd jira-cloud-mcp
 npm install
 ```
 
-3. Create a `.env` file in the project root:
-```env
-JIRA_API_TOKEN=your-api-token
-JIRA_EMAIL=your-jira-email
-JIRA_DOMAIN=your-domain.atlassian.net
-```
-
-4. Build the server:
+3. Build the server:
 ```bash
 npm run build
 ```
 
 ### Integration with Claude Desktop
 
-Add the server configuration to your Claude Desktop config file:
+Configure the server in your Claude Desktop config file:
 
 **MacOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 **Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
@@ -110,6 +103,11 @@ Add the server configuration to your Claude Desktop config file:
   }
 }
 ```
+
+Required environment variables:
+- `JIRA_API_TOKEN`: Your Jira API token (generate from Atlassian account settings)
+- `JIRA_EMAIL`: Your Jira account email
+- `JIRA_DOMAIN`: Your Jira domain (e.g., "your-company.atlassian.net")
 
 ### Development
 
