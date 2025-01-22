@@ -259,4 +259,90 @@ export class JiraClient {
       throw error;
     }
   }
+
+  async getUserInfo(accountId: string): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.baseUrl}/rest/api/3/user`,
+        {
+          headers: this.headers,
+          params: { accountId }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user information:', error);
+      throw error;
+    }
+  }
+
+  async searchUsers(query: string): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.baseUrl}/rest/api/3/user/search`,
+        {
+          headers: this.headers,
+          params: {
+            query,
+            maxResults: 50
+          }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error searching users:', error);
+      throw error;
+    }
+  }
+
+  async getUserGroups(accountId: string): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.baseUrl}/rest/api/3/user/groups`,
+        {
+          headers: this.headers,
+          params: { accountId }
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user groups:', error);
+      throw error;
+    }
+  }
+
+  // async addUserToGroup(accountId: string, groupId: string): Promise<any> {
+  //   try {
+  //     const response = await axios.post(
+  //       `${this.baseUrl}/rest/api/3/group/user`,
+  //       {
+  //         accountId
+  //       },
+  //       {
+  //         headers: this.headers,
+  //         params: { groupId }
+  //       }
+  //     );
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error adding user to group:', error);
+  //     throw error;
+  //   }
+  // }
+
+  // async removeUserFromGroup(accountId: string, groupId: string): Promise<any> {
+  //   try {
+  //     const response = await axios.delete(
+  //       `${this.baseUrl}/rest/api/3/group/user`,
+  //       {
+  //         headers: this.headers,
+  //         params: { accountId, groupId }
+  //       }
+  //     );
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Error removing user from group:', error);
+  //     throw error;
+  //   }
+  // }
 } 

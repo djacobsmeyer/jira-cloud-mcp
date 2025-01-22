@@ -260,7 +260,85 @@ class JiraCloudMCP {
               properties: {},
               required: []
             }
+          },
+          {
+            name: "get_user_info",
+            description: "Get information about a specific Jira user",
+            inputSchema: {
+              type: "object",
+              properties: {
+                accountId: {
+                  type: "string",
+                  description: "The account ID of the user"
+                }
+              },
+              required: ["accountId"]
+            }
+          },
+          {
+            name: "search_users",
+            description: "Search for Jira users",
+            inputSchema: {
+              type: "object",
+              properties: {
+                query: {
+                  type: "string",
+                  description: "Search query for users"
+                }
+              },
+              required: ["query"]
+            }
+          },
+          {
+            name: "get_user_groups",
+            description: "Get groups that a user belongs to",
+            inputSchema: {
+              type: "object",
+              properties: {
+                accountId: {
+                  type: "string",
+                  description: "The account ID of the user"
+                }
+              },
+              required: ["accountId"]
+            }
           }
+          // {
+          //   name: "add_user_to_group",
+          //   description: "Add a user to a group",
+          //   inputSchema: {
+          //     type: "object",
+          //     properties: {
+          //       accountId: {
+          //         type: "string",
+          //         description: "The account ID of the user"
+          //       },
+          //       groupId: {
+          //         type: "string",
+          //         description: "The ID of the group"
+          //       }
+          //     },
+          //     required: ["accountId", "groupId"]
+          //   }
+          // },
+          // {
+          //   name: "remove_user_from_group",
+          //   description: "Remove a user from a group",
+          //   inputSchema: {
+          //     type: "object",
+          //     properties: {
+          //       accountId: {
+          //         type: "string",
+          //         description: "The account ID of the user"
+          //       },
+          //       groupId: {
+          //         type: "string",
+          //         description: "The ID of the group"
+          //       }
+          //     },
+          //     required: ["accountId", "groupId"]
+          //   }
+          // }
         ]
       };
     });
@@ -529,6 +607,90 @@ class JiraCloudMCP {
             }]
           };
         }
+
+        case "get_user_info": {
+          const accountId = String(request.params.arguments?.accountId);
+          if (!accountId) {
+            throw new Error("Account ID is required");
+          }
+          const data = await this.jiraClient.getUserInfo(accountId);
+          return {
+            content: [{
+              type: "resource",
+              resource: {
+                uri: `jira:///users/${accountId}`,
+                mimeType: "application/json",
+                text: JSON.stringify(data, null, 2)
+              }
+            }]
+          };
+        }
+
+        case "search_users": {
+          const query = String(request.params.arguments?.query);
+          if (!query) {
+            throw new Error("Search query is required");
+          }
+          const data = await this.jiraClient.searchUsers(query);
+          return {
+            content: [{
+              type: "resource",
+              resource: {
+                uri: `jira:///users?query=${encodeURIComponent(query)}`,
+                mimeType: "application/json",
+                text: JSON.stringify(data, null, 2)
+              }
+            }]
+          };
+        }
+
+        case "get_user_groups": {
+          const accountId = String(request.params.arguments?.accountId);
+          if (!accountId) {
+            throw new Error("Account ID is required");
+          }
+          const data = await this.jiraClient.getUserGroups(accountId);
+          return {
+            content: [{
+              type: "resource",
+              resource: {
+                uri: `jira:///users/${accountId}/groups`,
+                mimeType: "application/json",
+                text: JSON.stringify(data, null, 2)
+              }
+            }]
+          };
+        }
+
+        // case "add_user_to_group": {
+        //   const accountId = String(request.params.arguments?.accountId);
+        //   const groupId = String(request.params.arguments?.groupId);
+        //   if (!accountId || !groupId) {
+        //     throw new Error("Account ID and group ID are required");
+        //   }
+        //   await this.jiraClient.addUserToGroup(accountId, groupId);
+        //   return {
+        //     content: [{
+        //       type: "text",
+        //       text: `User ${accountId} added to group ${groupId}`
+        //     }]
+        //   };
+        // }
+
+        // case "remove_user_from_group": {
+        //   const accountId = String(request.params.arguments?.accountId);
+        //   const groupId = String(request.params.arguments?.groupId);
+        //   if (!accountId || !groupId) {
+        //     throw new Error("Account ID and group ID are required");
+        //   }
+        //   await this.jiraClient.removeUserFromGroup(accountId, groupId);
+        //   return {
+        //     content: [{
+        //       type: "text",
+        //       text: `User ${accountId} removed from group ${groupId}`
+        //     }]
+        //   };
+        // }
 
         default:
           throw new Error("Unknown tool");
