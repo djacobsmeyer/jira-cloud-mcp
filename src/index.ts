@@ -251,6 +251,15 @@ class JiraCloudMCP {
               },
               required: ["workflowId"]
             }
+          },
+          {
+            name: "get_custom_fields",
+            description: "Get all custom fields defined in Jira",
+            inputSchema: {
+              type: "object",
+              properties: {},
+              required: []
+            }
           }
         ]
       };
@@ -500,6 +509,20 @@ class JiraCloudMCP {
               type: "resource",
               resource: {
                 uri: `jira:///workflows/${workflowId}/transitions`,
+                mimeType: "application/json",
+                text: JSON.stringify(data, null, 2)
+              }
+            }]
+          };
+        }
+
+        case "get_custom_fields": {
+          const data = await this.jiraClient.getCustomFields();
+          return {
+            content: [{
+              type: "resource",
+              resource: {
+                uri: "jira:///custom-fields",
                 mimeType: "application/json",
                 text: JSON.stringify(data, null, 2)
               }

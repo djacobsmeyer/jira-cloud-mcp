@@ -246,4 +246,17 @@ export class JiraClient {
       throw error;
     }
   }
+
+  async getCustomFields(): Promise<any> {
+    try {
+      const response = await axios.get(
+        `${this.baseUrl}/rest/api/3/field`,
+        { headers: this.headers }
+      );
+      return response.data.filter((field: any) => field.custom);
+    } catch (error) {
+      console.error('Error fetching custom fields:', error);
+      throw error;
+    }
+  }
 } 
